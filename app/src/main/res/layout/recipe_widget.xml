@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+android:id="@+id/widget_layout">
+
+    <ImageView android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+               android:src="@drawable/cheesecake"
+               android:id="@+id/widget_recipe_image"
+    />
+
+    <TextView
+        android:id="@+id/widget_recipe_ingredient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/colorPrimary"
+        android:background="@color/colorPrimary"
+        android:textStyle="normal"
+        android:textSize="18sp"
+        tools:text="123"
+    android:autoSizeTextType="uniform"/>
+
+</FrameLayout>

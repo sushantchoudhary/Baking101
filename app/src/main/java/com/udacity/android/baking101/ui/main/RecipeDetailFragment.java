@@ -88,7 +88,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdpate
 
         StringBuilder sbl = new StringBuilder();
         for(Ingredient ingredient : recipe.getIngredients()) {
-            sbl.append("✔︎ " + ingredient.getIngredient()+ "\n" + "\n");
+            sbl.append("✔︎ " + ingredient.getIngredient()+ "\n" );
         }
         mIngredientsTV.setText(sbl.toString());
 

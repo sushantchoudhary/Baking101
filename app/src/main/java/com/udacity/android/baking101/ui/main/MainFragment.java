@@ -16,9 +16,11 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.udacity.android.baking101.IngredientUpdateService;
 import com.udacity.android.baking101.R;
 import com.udacity.android.baking101.RecipeDetailActivity;
 import com.udacity.android.baking101.database.AppDatabase;
+import com.udacity.android.baking101.model.Ingredient;
 import com.udacity.android.baking101.model.Recipe;
 import com.udacity.android.baking101.network.ApiService;
 import com.udacity.android.baking101.network.RetroClient;
@@ -121,6 +123,14 @@ public class MainFragment extends Fragment implements RecipeAdapter.RecipeAdapte
 
     @Override
     public void onClick(Recipe recipe) {
+
+        StringBuilder sbl = new StringBuilder();
+        for(Ingredient ingredient : recipe.getIngredients()) {
+            sbl.append("✔︎ " + ingredient.getIngredient()+ "\n" );
+        }
+
+        IngredientUpdateService.startActionUpdateIngredient(getContext(), sbl.toString());
+
         Class destinationClass = RecipeDetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(getContext(), destinationClass);
         intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, recipe);
