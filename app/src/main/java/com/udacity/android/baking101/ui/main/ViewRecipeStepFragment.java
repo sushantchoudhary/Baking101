@@ -79,63 +79,61 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
         mDB = AppDatabase.getsInstance(getContext());
 
 
-        initializePlayer(selectedStep.getVideoURL());
         return rootView;
 
 
     }
 
-    private void initUI() {
-
-            stepInstructionTV.setText(selectedStep.getDescription());
-
-            AppExecutors.getInstance().diskIO().execute(() -> stepCount = mDB.stepDao().getStepsCount());
+    private void initPagination() {
 
 
-            if (selectedStep.getId() == stepCount - 1) {
-                nextButton.setEnabled(false);
-                Drawable background = nextButton.getBackground();
-                background.setTint(ContextCompat.getColor(getContext(), R.color.secondary_text));
-                nextButton.setBackground(background);
-            }
+        AppExecutors.getInstance().diskIO().execute(() -> stepCount = mDB.stepDao().getStepsCount());
 
-            if (selectedStep.getId() == 0) {
-                previousButton.setEnabled(false);
-                Drawable background = previousButton.getBackground();
-                background.setTint(ContextCompat.getColor(getContext(), R.color.secondary_text));
-                previousButton.setBackground(background);
 
-            }
+        if (selectedStep.getId() == stepCount - 1) {
+            nextButton.setEnabled(false);
+            Drawable background = nextButton.getBackground();
+            background.setTint(ContextCompat.getColor(getContext(), R.color.secondary_text));
+            nextButton.setBackground(background);
+        }
 
-            nextButton.setOnClickListener(view -> {
-                if (selectedStep.getId() < stepCount) {
+        if (selectedStep.getId() == 0) {
+            previousButton.setEnabled(false);
+            Drawable background = previousButton.getBackground();
+            background.setTint(ContextCompat.getColor(getContext(), R.color.secondary_text));
+            previousButton.setBackground(background);
 
-                    AppExecutors.getInstance().diskIO().execute(() -> {
-                        LiveData<Step> observableStep = mDB.stepDao().loadStepByStepId(selectedStep.getId() + 1);
-                        observableStep.observe(getActivity(), step -> {
-                            selectedStep = step;
-                            getActivity().runOnUiThread(() -> {
-                                Intent intentToStartStepActivity = new Intent(getContext(), ViewRecipeStepActivity.class);
-                                intentToStartStepActivity.putExtra(Intent.EXTRA_TEXT, selectedStep);
-                                startActivity(intentToStartStepActivity);
-                            });
+        }
+
+        nextButton.setOnClickListener(view -> {
+            if (selectedStep.getId() < stepCount) {
+
+                AppExecutors.getInstance().diskIO().execute(() -> {
+                    LiveData<Step> observableStep = mDB.stepDao().loadStepByStepId(selectedStep.getId() + 1);
+                    observableStep.observe(getActivity(), step -> {
+                        selectedStep = step;
+                        getActivity().runOnUiThread(() -> {
+                            Intent intentToStartStepActivity = new Intent(getContext(), ViewRecipeStepActivity.class);
+                            intentToStartStepActivity.putExtra(Intent.EXTRA_TEXT, selectedStep);
+                            startActivity(intentToStartStepActivity);
                         });
                     });
-
-                }
-            });
-
-            previousButton.setOnClickListener(view -> AppExecutors.getInstance().diskIO().execute(() -> {
-                LiveData<Step> observableStep = mDB.stepDao().loadStepByStepId(selectedStep.getId() - 1);
-                observableStep.observe(getActivity(), step -> {
-                    selectedStep = step;
-                    getActivity().runOnUiThread(() -> {
-                        Intent intentToStartStepActivity = new Intent(getContext(), ViewRecipeStepActivity.class);
-                        intentToStartStepActivity.putExtra(Intent.EXTRA_TEXT, selectedStep);
-                        startActivity(intentToStartStepActivity);
-                    });
                 });
-            }));
+
+            }
+        });
+
+        previousButton.setOnClickListener(view -> AppExecutors.getInstance().diskIO().execute(() -> {
+            LiveData<Step> observableStep = mDB.stepDao().loadStepByStepId(selectedStep.getId() - 1);
+            observableStep.observe(getActivity(), step -> {
+                selectedStep = step;
+                getActivity().runOnUiThread(() -> {
+                    Intent intentToStartStepActivity = new Intent(getContext(), ViewRecipeStepActivity.class);
+                    intentToStartStepActivity.putExtra(Intent.EXTRA_TEXT, selectedStep);
+                    startActivity(intentToStartStepActivity);
+                });
+            });
+        }));
 
     }
 
@@ -157,8 +155,16 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
         if (savedInstanceState != null) {
             selectedStep = savedInstanceState.getParcelable("step");
         }
+        initializePlayer(selectedStep.getVideoURL());
+
         if (getResources().getConfiguration().orientation != ORIENTATION_LANDSCAPE) {
-            initUI();
+            stepInstructionTV.setText(selectedStep.getDescription());
+            if (getActivity().findViewById(R.id.recipe_detail_tablet_layout) != null) {
+                previousButton.setVisibility(View.GONE);
+                nextButton.setVisibility(View.GONE);
+            } else {
+                initPagination();
+            }
         }
 
     }
@@ -196,7 +202,11 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
     @Override
     public void onResume() {
         super.onResume();
-        hideSystemUi();
+        // Enable fullscreen in portrait mode on the the phone. Disabled on the tablet
+        if (getActivity().findViewById(R.id.recipe_detail_tablet_layout) == null) {
+            hideSystemUi();
+        }
+//
         if ((Util.SDK_INT <= 23 || player == null)) {
             initializePlayer(selectedStep.getVideoURL());
         }

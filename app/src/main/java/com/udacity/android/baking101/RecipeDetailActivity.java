@@ -5,13 +5,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.udacity.android.baking101.model.Recipe;
+import com.udacity.android.baking101.model.Step;
 import com.udacity.android.baking101.ui.main.RecipeDetailFragment;
+import com.udacity.android.baking101.ui.main.ViewRecipeStepFragment;
 
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity implements RecipeDetailFragment.OnRecipeClickListener{
 
     private Recipe recipe;
+    private boolean mTwoPane;
     private static final String FRAGMENT_TAG = "RecipeDetailFragment";
     private static  final String TAG = RecipeDetailActivity.class.getSimpleName();
     @Override
@@ -22,25 +26,50 @@ public class RecipeDetailActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        if (savedInstanceState == null) {
-            Intent intentFromHome = getIntent();
-            if (intentFromHome != null) {
-                if (intentFromHome.hasExtra(Intent.EXTRA_TEXT)) {
-                    recipe = intentFromHome.getParcelableExtra(Intent.EXTRA_TEXT);
+        if(findViewById(R.id.recipe_detail_tablet_layout) != null) {
+            mTwoPane = true;
+            if(savedInstanceState  == null) {
+                Intent intentFromHome = getIntent();
+                if (intentFromHome != null) {
+                    if (intentFromHome.hasExtra(Intent.EXTRA_TEXT)) {
+                        recipe = intentFromHome.getParcelableExtra(Intent.EXTRA_TEXT);
+                    }
                 }
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.recipe_detail_container, RecipeDetailFragment.newInstance(recipe), FRAGMENT_TAG )
+                        .addToBackStack(FRAGMENT_TAG)
+                        .commit();
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.view_recipe_step_container, ViewRecipeStepFragment.newInstance(recipe.getSteps().get(0)), FRAGMENT_TAG)
+                        .addToBackStack(FRAGMENT_TAG)
+                        .commit();
+
             }
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.recipe_detail_container, RecipeDetailFragment.newInstance(recipe), FRAGMENT_TAG )
-                    .addToBackStack(FRAGMENT_TAG)
-                    .commit();
+        } else  {
+            mTwoPane = false;
+            if (savedInstanceState == null) {
+                Intent intentFromHome = getIntent();
+                if (intentFromHome != null) {
+                    if (intentFromHome.hasExtra(Intent.EXTRA_TEXT)) {
+                        recipe = intentFromHome.getParcelableExtra(Intent.EXTRA_TEXT);
+                    }
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.recipe_detail_container, RecipeDetailFragment.newInstance(recipe), FRAGMENT_TAG )
+                        .addToBackStack(FRAGMENT_TAG)
+                        .commit();
 
-        } else {
+            } else {
 
-            Fragment mContent  = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.recipe_detail_container, mContent)
-                    .commit();
+                Fragment mContent  = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.recipe_detail_container, mContent)
+                        .commit();
+            }
         }
+
+
     }
 
     @Override
@@ -74,8 +103,23 @@ public class RecipeDetailActivity extends AppCompatActivity {
         } else if (getSupportFragmentManager().getBackStackEntryCount() == 1 ){
             finish();
         } else {
+            if (mTwoPane) {
+                    finish();
+            }
             getSupportFragmentManager().popBackStack();
-
         }
     }
+
+    @Override
+    public void onStepSelected(Step step) {
+        Toast.makeText(this, "Step selected = " + step.getDescription(), Toast.LENGTH_LONG).show();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.view_recipe_step_container, ViewRecipeStepFragment.newInstance(step), FRAGMENT_TAG)
+                .addToBackStack(FRAGMENT_TAG)
+                .commit();
+
+    }
+
+
 }

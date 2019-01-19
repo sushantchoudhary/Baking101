@@ -1,6 +1,7 @@
 package com.udacity.android.baking101.ui.main;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +33,22 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdpate
     private static final String TAG = RecipeDetailFragment.class.getSimpleName();
     private AppDatabase mDB;
 
+    OnRecipeClickListener mCallback;
+    // Interface to communicate with Activity
+    public interface  OnRecipeClickListener {
+        void onStepSelected(Step step);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (OnRecipeClickListener) context;
+
+        } catch (ClassCastException e ) {
+            throw new ClassCastException(context.toString() + " must implement OnRecipeClickListener" );
+        }
+    }
 
     public static RecipeDetailFragment newInstance(Recipe recipeFromIntent) {
         recipe = recipeFromIntent;
@@ -102,10 +119,15 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdpate
 
     @Override
     public void onClick(Step step) {
-        Class destinationClass = ViewRecipeStepActivity.class;
-        Intent intentToStartStepActivity = new Intent(getContext(), destinationClass);
-        intentToStartStepActivity.putExtra(Intent.EXTRA_TEXT, step);
-        startActivity(intentToStartStepActivity );
+        if(getActivity().findViewById(R.id.recipe_detail_tablet_layout) != null) {
+            mCallback.onStepSelected(step);
+        } else {
+            Class destinationClass = ViewRecipeStepActivity.class;
+            Intent intentToStartStepActivity = new Intent(getContext(), destinationClass);
+            intentToStartStepActivity.putExtra(Intent.EXTRA_TEXT, step);
+            startActivity(intentToStartStepActivity );
+        }
+
     }
 
     @Override
