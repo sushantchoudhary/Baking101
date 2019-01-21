@@ -1,4 +1,4 @@
-package com.udacity.android.baking101;
+package com.udacity.android.baking101.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
+
+import com.udacity.android.baking101.MainActivity;
+import com.udacity.android.baking101.R;
 
 import static android.view.View.GONE;
 

@@ -29,9 +29,9 @@
         <activity android:name=".ViewRecipeStepActivity">
         </activity>
 
-        <service android:name=".IngredientUpdateService"/>
+        <service android:name=".widget.IngredientUpdateService"/>
 
-        <receiver android:name=".RecipeUpdateWidgetProvider">
+        <receiver android:name=".widget.RecipeUpdateWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>

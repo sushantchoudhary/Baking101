@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.udacity.android.baking101.IngredientUpdateService;
+import com.udacity.android.baking101.widget.IngredientUpdateService;
 import com.udacity.android.baking101.R;
 import com.udacity.android.baking101.RecipeDetailActivity;
 import com.udacity.android.baking101.database.AppDatabase;
