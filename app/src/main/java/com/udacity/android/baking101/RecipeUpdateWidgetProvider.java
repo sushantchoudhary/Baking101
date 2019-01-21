@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
+import static android.view.View.GONE;
+
 /**
  * Implementation of App Widget functionality.
  */
@@ -16,16 +18,17 @@ public class RecipeUpdateWidgetProvider extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, String ingredients,
                                 int appWidgetId) {
 
-//        CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
-//        views.setTextViewText(R.id.app_widget_text, widgetText);
 
         Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.widget_recipe_image, pendingIntent);
 
-        views.setTextViewText(R.id.widget_recipe_ingredient, ingredients);
+        if (ingredients != null) {
+            views.setViewVisibility(R.id.widget_recipe_image, GONE);
+            views.setTextViewText(R.id.widget_recipe_ingredient, ingredients);
+        }
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

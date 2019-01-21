@@ -23,7 +23,6 @@ android:id="@+id/widget_layout">
         android:background="@color/colorPrimary"
         android:textStyle="normal"
         android:textSize="18sp"
-        tools:text="123"
-    android:autoSizeTextType="uniform"/>
+        tools:text="123"/>
 
 </FrameLayout>
