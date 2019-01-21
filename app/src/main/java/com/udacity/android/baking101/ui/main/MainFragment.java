@@ -3,6 +3,7 @@ package com.udacity.android.baking101.ui.main;
 import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -20,11 +21,13 @@ import com.udacity.android.baking101.IngredientUpdateService;
 import com.udacity.android.baking101.R;
 import com.udacity.android.baking101.RecipeDetailActivity;
 import com.udacity.android.baking101.database.AppDatabase;
+import com.udacity.android.baking101.databinding.MainFragmentBinding;
 import com.udacity.android.baking101.model.Ingredient;
 import com.udacity.android.baking101.model.Recipe;
 import com.udacity.android.baking101.network.ApiService;
 import com.udacity.android.baking101.network.RetroClient;
 import com.udacity.android.baking101.util.AppExecutors;
+import com.udacity.android.baking101.viewmodel.MainViewModel;
 
 import java.util.List;
 
@@ -56,14 +59,16 @@ public class MainFragment extends Fragment implements RecipeAdapter.RecipeAdapte
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.main_fragment, container, false);
 
-        mErrorMessageDisplay = rootView.findViewById(R.id.tv_error_message_display);
-        mLoadingIndicator = rootView.findViewById(R.id.pb_loading_indicator);
+        MainFragmentBinding fragmentDataBinding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
+        View rootView = fragmentDataBinding.getRoot();
+
+        mErrorMessageDisplay = fragmentDataBinding.tvErrorMessageDisplay;
+        mLoadingIndicator = fragmentDataBinding.pbLoadingIndicator;
 
         mDB = AppDatabase.getsInstance(getContext());
 
-        mRecipeRV = rootView.findViewById(R.id.recyclerview_recipe);
+        mRecipeRV = fragmentDataBinding.recyclerviewRecipe;
 
         layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL
                 , false);
@@ -125,10 +130,12 @@ public class MainFragment extends Fragment implements RecipeAdapter.RecipeAdapte
     public void onClick(Recipe recipe) {
 
         StringBuilder sbl = new StringBuilder();
-        for(Ingredient ingredient : recipe.getIngredients()) {
-            sbl.append("✔︎ " + ingredient.getIngredient()+ "\n" );
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            sbl.append("✔︎ " + ingredient.getIngredient() + "\n");
         }
-
+        /**
+         * Pass current recipe ingredient to widget provider
+         */
         IngredientUpdateService.startActionUpdateIngredient(getContext(), sbl.toString());
 
         Class destinationClass = RecipeDetailActivity.class;

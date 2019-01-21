@@ -8,6 +8,7 @@ import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 
 import com.udacity.android.baking101.ui.main.MainFragment;
+import com.udacity.android.baking101.util.RecipeIdlingResource;
 
 public class MainActivity extends AppCompatActivity {
 

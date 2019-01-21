@@ -1,6 +1,5 @@
-package com.udacity.android.baking101;
+package com.udacity.android.baking101.util;
 
-import android.media.tv.TvRecordingClient;
 import android.support.test.espresso.IdlingResource;
 
 import java.util.concurrent.atomic.AtomicBoolean;

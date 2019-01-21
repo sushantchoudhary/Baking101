@@ -3,6 +3,7 @@ package com.udacity.android.baking101.ui.main;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,9 +19,13 @@ import android.widget.TextView;
 import com.udacity.android.baking101.R;
 import com.udacity.android.baking101.ViewRecipeStepActivity;
 import com.udacity.android.baking101.database.AppDatabase;
+import com.udacity.android.baking101.databinding.MainFragmentBinding;
+import com.udacity.android.baking101.databinding.RecipeDetailFragmentBinding;
 import com.udacity.android.baking101.model.Ingredient;
 import com.udacity.android.baking101.model.Recipe;
 import com.udacity.android.baking101.model.Step;
+import com.udacity.android.baking101.viewmodel.RecipeDetailViewModel;
+import com.udacity.android.baking101.viewmodel.RecipeDetailViewModelFactory;
 
 public class RecipeDetailFragment extends Fragment implements RecipeDetailAdpater.RecipeDetailsAdapterOnClickHandler {
 
@@ -58,12 +63,13 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdpate
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.recipe_detail_fragment, container, false);
 
+        RecipeDetailFragmentBinding fragmentDataBinding = DataBindingUtil.inflate(inflater, R.layout.recipe_detail_fragment, container, false);
+        View rootView = fragmentDataBinding.getRoot();
 
-        mIngredientsTV = rootView.findViewById(R.id.ingredients_view);
+        mIngredientsTV  = fragmentDataBinding.ingredientsView;
 
-        mRecipeDetailRV = rootView.findViewById(R.id.recyclerview_recipe_steps);
+        mRecipeDetailRV  = fragmentDataBinding.recyclerviewRecipeSteps;
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL
                 ,false);
@@ -108,9 +114,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdpate
         RecipeDetailViewModelFactory factory = new RecipeDetailViewModelFactory(mDB, recipe.getId());
 
         mViewModel = ViewModelProviders.of(this, factory).get(RecipeDetailViewModel.class);
-        mViewModel.getRecipe().observe( this, recipeFromModel -> {
-            mDB.stepDao().insertStepList(recipeFromModel.getSteps());
-        });
+        mViewModel.getRecipe().observe( this, recipeFromModel -> mDB.stepDao().insertStepList(recipeFromModel.getSteps()));
         if(savedInstanceState != null) {
             recipe = savedInstanceState.getParcelable("recipe");
         }

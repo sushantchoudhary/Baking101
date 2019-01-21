@@ -1,4 +1,4 @@
-package com.udacity.android.baking101.ui.main;
+package com.udacity.android.baking101.viewmodel;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
@@ -6,18 +6,19 @@ import android.support.annotation.NonNull;
 
 import com.udacity.android.baking101.database.AppDatabase;
 
-public class ViewRecipeStepViewModelFactory extends ViewModelProvider.NewInstanceFactory {
-    private final AppDatabase mDB;
-    private final int stepId;
+public class RecipeDetailViewModelFactory extends   ViewModelProvider.NewInstanceFactory{
 
-    public ViewRecipeStepViewModelFactory(AppDatabase mDB , int stepId) {
+    private final AppDatabase mDB;
+    private final int recipeId;
+
+    public RecipeDetailViewModelFactory(AppDatabase mDB, int recipeId) {
         this.mDB = mDB;
-        this.stepId = stepId;
+        this.recipeId = recipeId;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ViewRecipeStepViewModel(mDB, stepId);
+        return (T) new RecipeDetailViewModel(mDB, recipeId);
     }
 }

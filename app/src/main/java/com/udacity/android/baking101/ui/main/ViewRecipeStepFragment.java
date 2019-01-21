@@ -3,6 +3,7 @@ package com.udacity.android.baking101.ui.main;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -40,8 +41,11 @@ import com.google.android.exoplayer2.util.Util;
 import com.udacity.android.baking101.R;
 import com.udacity.android.baking101.ViewRecipeStepActivity;
 import com.udacity.android.baking101.database.AppDatabase;
+import com.udacity.android.baking101.databinding.RecipeDetailFragmentBinding;
+import com.udacity.android.baking101.databinding.ViewRecipeStepFragmentBinding;
 import com.udacity.android.baking101.model.Step;
 import com.udacity.android.baking101.util.AppExecutors;
+import com.udacity.android.baking101.viewmodel.ViewRecipeStepViewModel;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
@@ -68,13 +72,16 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.view_recipe_step_fragment, container, false);
 
-        playerView = rootView.findViewById(R.id.ep_video_view);
-        stepInstructionTV = rootView.findViewById(R.id.recipe_step_instruction);
+        ViewRecipeStepFragmentBinding fragmentDataBinding = DataBindingUtil.inflate(inflater, R.layout.view_recipe_step_fragment, container, false);
+        View rootView = fragmentDataBinding.getRoot();
 
-        previousButton = rootView.findViewById(R.id.previous_step);
-        nextButton = rootView.findViewById(R.id.next_step);
+        playerView  =  fragmentDataBinding.epVideoView;
+
+        stepInstructionTV  = fragmentDataBinding.recipeStepInstruction;
+
+        previousButton  =  fragmentDataBinding.previousStep;
+        nextButton  = fragmentDataBinding.nextStep;
 
         mDB = AppDatabase.getsInstance(getContext());
 
@@ -86,9 +93,7 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
 
     private void initPagination() {
 
-
         AppExecutors.getInstance().diskIO().execute(() -> stepCount = mDB.stepDao().getStepsCount());
-
 
         if (selectedStep.getId() == stepCount - 1) {
             nextButton.setEnabled(false);
@@ -140,18 +145,6 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        ViewRecipeStepViewModelFactory factory = new ViewRecipeStepViewModelFactory(mDB, selectedStep.getId());
-//        mViewModel = ViewModelProviders.of(this, factory).get(ViewRecipeStepViewModel.class);
-//        mViewModel.getStep().observe(this, stepfromViewModel -> {
-
-//            Fragment frg = getFragmentManager().findFragmentByTag("ViewRecipeStepFragment");
-//            final FragmentTransaction ft = getFragmentManager().beginTransaction();
-//            ft.detach(frg);
-//            ft.attach(frg);
-//            ft.commit();
-
-//        });
-
         if (savedInstanceState != null) {
             selectedStep = savedInstanceState.getParcelable("step");
         }

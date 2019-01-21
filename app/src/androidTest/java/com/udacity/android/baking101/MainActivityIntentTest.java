@@ -31,7 +31,7 @@ public class MainActivityIntentTest {
     public void setup() {
         recipeIdlingResource = activityTestRule.getActivity().getIdlingResource();
         idlingRegistry.register(recipeIdlingResource);
-        }
+    }
 
     @Test
     public void ClickRecyclerViewItem_createRecipeDetailsIntent() {

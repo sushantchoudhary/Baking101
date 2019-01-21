@@ -1,4 +1,4 @@
-package com.udacity.android.baking101.ui.main;
+package com.udacity.android.baking101.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
