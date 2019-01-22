@@ -119,7 +119,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeDet
 
     @Override
     public void onStepSelected(Step step) {
-        Toast.makeText(this, "Step selected = " + step.getDescription(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Step selected = " + step.getDescription(), Toast.LENGTH_LONG).show();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.view_recipe_step_container, ViewRecipeStepFragment.newInstance(step), FRAGMENT_TAG)
