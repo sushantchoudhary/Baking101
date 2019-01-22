@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.udacity.android.baking101.R;
 import com.udacity.android.baking101.model.Step;
@@ -37,7 +38,7 @@ public class RecipeDetailAdpater extends  RecyclerView.Adapter<RecipeDetailAdpat
 
     public class RecipeDetailAdpaterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public final Button recipeStep;
+        public final TextView recipeStep;
 
         public RecipeDetailAdpaterViewHolder(@NonNull View itemView) {
             super(itemView);
