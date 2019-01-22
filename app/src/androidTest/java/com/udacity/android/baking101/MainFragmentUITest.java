@@ -1,14 +1,11 @@
 package com.udacity.android.baking101;
 
-import android.support.test.espresso.IdlingRegistry;
-import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.udacity.android.baking101.ui.main.MainFragment;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -22,7 +19,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.anyOf;
 
 /**
- * Instrumented test, which will execute on an Android device.
+ * TODO Plan to use androidx fragment test scenario APIs
  **/
 @RunWith(AndroidJUnit4.class)
 public class MainFragmentUITest {
@@ -30,16 +27,8 @@ public class MainFragmentUITest {
     @Rule
     public ActivityTestRule<SingleFragmentActivity> mActivityTestRule = new ActivityTestRule<>(SingleFragmentActivity.class, false, true);
 
-    private IdlingRegistry idlingRegistry = IdlingRegistry.getInstance();
-    private IdlingResource recipeIdlingResource;
-
     @Before
-    public void setup() {
-//        recipeIdlingResource = mActivityTestRule.getActivity().getIdlingResource();
-//        idlingRegistry.register(recipeIdlingResource);
-        }
-
-
+    public void setup() {}
 
     @Test @Ignore
     public void ViewMainActivity_VerifyFragmentLoad() {
@@ -54,15 +43,6 @@ public class MainFragmentUITest {
         });
 
         onView(anyOf(withId(R.id.pb_loading_indicator))).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
-    }
-
-
-    @After
-    public void unregisterIdlingResource()
-    {
-        if(recipeIdlingResource != null) {
-//            idlingRegistry.unregister(recipeIdlingResource);
-        }
     }
 
 }

@@ -2,6 +2,10 @@ package com.udacity.android.baking101;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,9 +15,12 @@ import com.udacity.android.baking101.model.Recipe;
 import com.udacity.android.baking101.model.Step;
 import com.udacity.android.baking101.ui.main.RecipeDetailFragment;
 import com.udacity.android.baking101.ui.main.ViewRecipeStepFragment;
+import com.udacity.android.baking101.util.RecipeIdlingResource;
 
 public class RecipeDetailActivity extends AppCompatActivity implements RecipeDetailFragment.OnRecipeClickListener{
 
+    @Nullable
+    private RecipeIdlingResource recipeIdlingResource;
     private Recipe recipe;
     private boolean mTwoPane;
     private static final String FRAGMENT_TAG = "RecipeDetailFragment";
@@ -119,6 +126,16 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeDet
                 .addToBackStack(FRAGMENT_TAG)
                 .commit();
 
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (recipeIdlingResource == null) {
+            recipeIdlingResource = new RecipeIdlingResource();
+        }
+
+        return  recipeIdlingResource;
     }
 
 

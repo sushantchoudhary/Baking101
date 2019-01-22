@@ -56,6 +56,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdpate
     }
 
     public static RecipeDetailFragment newInstance(Recipe recipeFromIntent) {
+
         recipe = recipeFromIntent;
         return new RecipeDetailFragment();
     }
@@ -73,6 +74,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdpate
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL
                 ,false);
+
         mRecipeDetailRV.setLayoutManager(layoutManager);
 
         mRecipeDetailRV.setHasFixedSize(true);
