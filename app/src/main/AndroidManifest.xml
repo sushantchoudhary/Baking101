@@ -26,10 +26,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".ViewRecipeStepActivity">
+        <activity android:name=".ViewRecipeStepActivity" android:supportsPictureInPicture="true">
         </activity>
 
         <service android:name=".widget.IngredientUpdateService"/>
+
+        <service android:name=".widget.GridWidgetService"
+                 android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <receiver android:name=".widget.RecipeUpdateWidgetProvider">
             <intent-filter>

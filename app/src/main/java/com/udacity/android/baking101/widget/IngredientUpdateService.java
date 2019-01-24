@@ -8,14 +8,16 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.udacity.android.baking101.R;
+import com.udacity.android.baking101.model.Recipe;
 
 public class IngredientUpdateService extends IntentService {
 
     public static final String ACTION_UPDATE_RECIPE_WIDGET = "com.udacity.android.baking101.action.update_recipe";
     public static final String ACTION_UPDATE_INGREDIENT = "com.udacity.android.baking101.action.update_ingredient";
 
-    private static final String EXTRA_RECIPE = "com.udacity.android.baking101.extra.RECIPE_INGREDIENT" ;
-    private static String ingredientFromSource;
+    private static final String EXTRA_RECIPE = "com.udacity.android.baking101.extra.RECIPE" ;
+    private static Recipe mRecipe;
+
 
     public IngredientUpdateService( ) {
         super("IngredientUpdateService");
@@ -27,9 +29,9 @@ public class IngredientUpdateService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionUpdateIngredient(Context context, String ingredient) {
+    public static void startActionUpdateIngredient(Context context, Recipe recipe) {
         Intent intent = new Intent(context, IngredientUpdateService.class);
-        intent.putExtra(EXTRA_RECIPE, ingredient);
+        intent.putExtra(EXTRA_RECIPE, recipe);
         intent.setAction(ACTION_UPDATE_INGREDIENT);
         context.startService(intent);
     }
@@ -41,8 +43,8 @@ public class IngredientUpdateService extends IntentService {
         if(intent != null){
             final String action = intent.getAction();
             if(ACTION_UPDATE_INGREDIENT.equals(action) ) {
-                ingredientFromSource = intent.getStringExtra(EXTRA_RECIPE);
-                handleActionUpdateIngredient(ingredientFromSource);
+                mRecipe = intent.getParcelableExtra(EXTRA_RECIPE);
+                handleActionUpdateIngredient(mRecipe);
             } else   if(ACTION_UPDATE_RECIPE_WIDGET.equals(action) ) {
                 handleActionUpdateRecipe();
             }
@@ -53,13 +55,14 @@ public class IngredientUpdateService extends IntentService {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeUpdateWidgetProvider.class));
 
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_layout);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_grid_view);
 
-        RecipeUpdateWidgetProvider.updateRecipeWidgets(this, appWidgetManager, ingredientFromSource, appWidgetIds );
+
+        RecipeUpdateWidgetProvider.updateRecipeWidgets(this, appWidgetManager, mRecipe, appWidgetIds );
     }
 
-    private void handleActionUpdateIngredient(String ingredient) {
-        ingredientFromSource = ingredient;
+    private void handleActionUpdateIngredient(Recipe recipe) {
+        mRecipe = recipe;
         startActionUpdateRecipe(this);
     }
 

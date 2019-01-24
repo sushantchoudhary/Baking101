@@ -28,6 +28,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:fastforward_increment="3000"
+        app:rewind_increment="3000"
+        app:resize_mode="fill"
     />
 
     <android.support.constraint.Guideline

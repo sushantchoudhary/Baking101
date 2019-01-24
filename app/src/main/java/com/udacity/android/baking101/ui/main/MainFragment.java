@@ -129,14 +129,15 @@ public class MainFragment extends Fragment implements RecipeAdapter.RecipeAdapte
     @Override
     public void onClick(Recipe recipe) {
 
-        StringBuilder sbl = new StringBuilder();
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            sbl.append("✔︎ " + ingredient.getIngredient() + "\n");
-        }
+        AppExecutors.getInstance().diskIO().execute(()
+                -> {
+            mDB.ingredientDao().deleteAllIngredient();
+            mDB.ingredientDao().insertIngredientList(recipe.getIngredients());
+        });
         /**
          * Pass current recipe ingredient to widget provider
          */
-        IngredientUpdateService.startActionUpdateIngredient(getContext(), sbl.toString());
+        IngredientUpdateService.startActionUpdateIngredient(getContext(), recipe);
 
         Class destinationClass = RecipeDetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(getContext(), destinationClass);

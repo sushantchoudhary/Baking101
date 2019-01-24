@@ -41,7 +41,6 @@ import com.google.android.exoplayer2.util.Util;
 import com.udacity.android.baking101.R;
 import com.udacity.android.baking101.ViewRecipeStepActivity;
 import com.udacity.android.baking101.database.AppDatabase;
-import com.udacity.android.baking101.databinding.RecipeDetailFragmentBinding;
 import com.udacity.android.baking101.databinding.ViewRecipeStepFragmentBinding;
 import com.udacity.android.baking101.model.Step;
 import com.udacity.android.baking101.util.AppExecutors;
@@ -62,6 +61,9 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
 
     private static final String TAG = ViewRecipeStepFragment.class.getSimpleName();
     private AppDatabase mDB;
+    private long currentposition;
+    private int currentwindowindex;
+    private boolean playwhenready;
 
     public static ViewRecipeStepFragment newInstance(Step step) {
         selectedStep = step;
@@ -148,7 +150,7 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
         if (savedInstanceState != null) {
             selectedStep = savedInstanceState.getParcelable("step");
         }
-        initializePlayer(selectedStep.getVideoURL());
+        initializePlayer(selectedStep.getVideoURL(), 0, savedInstanceState);
 
         if (getResources().getConfiguration().orientation != ORIENTATION_LANDSCAPE) {
             stepInstructionTV.setText(selectedStep.getDescription());
@@ -162,7 +164,7 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
 
     }
 
-    private void initializePlayer(String mediaUri) {
+    private void initializePlayer(String mediaUri,  long seekPosition , @Nullable Bundle savedInstanceState) {
         if (player == null) {
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
@@ -181,6 +183,11 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
                     .setExtractorsFactory(new DefaultExtractorsFactory())
                     .createMediaSource(Uri.parse(mediaUri));
             player.prepare(mediaSource);
+            if(savedInstanceState != null) {
+                player.seekTo(savedInstanceState.getInt("currentwindowindex"), savedInstanceState.getLong("currentposition"));
+            } else {
+                player.seekTo(0, seekPosition);
+            }
             player.setPlayWhenReady(true);
         }
     }
@@ -201,13 +208,26 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
         }
 //
         if ((Util.SDK_INT <= 23 || player == null)) {
-            initializePlayer(selectedStep.getVideoURL());
+            initializePlayer(selectedStep.getVideoURL(), currentposition,null);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            initializePlayer(selectedStep.getVideoURL(), currentposition, null);
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
+        currentposition  =player.getContentPosition();
+        currentwindowindex = player.getCurrentWindowIndex();
+        playwhenready =  player.getPlayWhenReady();
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             releasePlayer();
         }
@@ -224,9 +244,31 @@ public class ViewRecipeStepFragment extends Fragment implements ExoPlayer.EventL
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable("step", selectedStep);
+
+        // Save exoplayer playback state on config change
+        currentposition  =player.getContentPosition();
+        currentwindowindex = player.getCurrentWindowIndex();
+        playwhenready  = player.getPlayWhenReady();
+
+        outState.putLong("currentposition", currentposition);
+        outState.putInt("currentwindowindex", currentwindowindex);
+        outState.putBoolean("playwhenready", playwhenready);
+
         super.onSaveInstanceState(outState);
         Log.d(TAG, "Saving step in bundle during orientation change");
 
+
+
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null) {
+            currentposition = savedInstanceState.getInt("currentposition");
+            currentwindowindex = savedInstanceState.getInt("currentwindowindex");
+            playwhenready = savedInstanceState.getBoolean("playwhenready");
+        }
     }
 
     @SuppressLint("InlinedApi")

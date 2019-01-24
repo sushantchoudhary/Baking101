@@ -1,9 +1,13 @@
 package com.udacity.android.baking101;
 
+import android.app.PictureInPictureParams;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Rational;
 import android.widget.Button;
 
 import com.udacity.android.baking101.model.Step;
@@ -65,6 +69,13 @@ public class ViewRecipeStepActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void onUserLeaveHint() {
+            super.onUserLeaveHint();
+        enterPictureInPictureMode(new PictureInPictureParams.Builder()
+                .setAspectRatio(new Rational(16, 9)).build());
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

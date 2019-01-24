@@ -16,7 +16,7 @@ import java.util.List;
 public interface IngredientDao {
 
     @Query("SELECT * FROM ingredient")
-    LiveData<List<Ingredient>> loadAllIngredient();
+    List<Ingredient> loadAllIngredient();
 
     @Query("DELETE FROM ingredient")
     void deleteAllIngredient();
@@ -34,6 +34,6 @@ public interface IngredientDao {
     void deleteIngredient(Ingredient ingredient);
 
     @Query("SELECT * FROM ingredient WHERE recipeId = :recipeId")
-    LiveData<List<Ingredient>> loadIngredientByRecipeId(int recipeId);
+    List<Ingredient> loadIngredientByRecipeId(int recipeId);
 }
 

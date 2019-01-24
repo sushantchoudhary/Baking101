@@ -12,10 +12,7 @@ import com.google.gson.annotations.SerializedName;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(tableName = "ingredient" , foreignKeys = @ForeignKey(entity = Recipe.class,
-        parentColumns = "id",
-        childColumns = "recipeId",
-        onDelete = CASCADE))
+@Entity(tableName = "ingredient")
 public class Ingredient implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
